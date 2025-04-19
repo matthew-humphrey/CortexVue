@@ -167,6 +167,8 @@ void Display::showCommandSaved(uint8_t switchNumber, uint8_t commandIndex) {
   
   display.display();
   delay(1500); // Show for 1.5 seconds
+
+  clearMidiMessageArea(); // Clear the MIDI message area
   
   // Return to normal mode
   inProgramMode = false;

@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define FIRMWARE_VERSION "v1.0.2" // Version of the firmware
+#define FIRMWARE_VERSION "v1.0.0" // Version of the firmware
 
 // Pin Definitions
 #define FOOTSWITCH_1_PIN 2    // D2
