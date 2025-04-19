@@ -16,9 +16,6 @@ class MidiController {
     // Initialize MIDI functionality
     void begin();
     
-    // Send CC message when footswitch is pressed/released
-    void sendFootswitchCC(uint8_t switchNumber, bool state);
-    
     // Send a note on/off message
     void sendNote(uint8_t note, bool on, uint8_t velocity = 127);
     

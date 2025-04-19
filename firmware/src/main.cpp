@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <EEPROM.h>
 #include "display.h"
 #include "footswitches.h"
 #include "midi_controller.h"
@@ -35,17 +34,17 @@ void setup() {
   
   // Show splash screen
   oled.showSplashScreen(DEVICE_NAME);
-  
+
   // Initialize footswitches
   footswitches.begin();
-  
+
   // Initialize MIDI
   midiController.begin();
-  
+ 
   // Load footswitch assignments from EEPROM
   loadFootswitchAssignments(&footswitchAssignments[0], &footswitchAssignments[1], 
                            &footswitchAssignments[2], &footswitchAssignments[3]);
-  
+
   // Show initial footswitch states
   oled.updateFootswitchStates(
     footswitches.getState(1),
@@ -109,19 +108,27 @@ void loop() {
           heldSwitch = changedSwitch;
           switchHoldStartTime = currentTime;
           
-          // Execute normal command
-          executeCommand(footswitchAssignments[changedSwitch - 1], true, &oled.state[changedSwitch - 1]);
+          // Show the function name on the bottom line but don't send MIDI yet
+          oled.showFunctionPreview(footswitchAssignments[changedSwitch - 1]);
         } 
         else { // Switch released
           // Check if this was the switch being held
           if (switchBeingHeld && heldSwitch == changedSwitch) {
+            // Only send the command if the switch wasn't held long enough to enter programming
+            if (currentTime - switchHoldStartTime < HOLD_TIME_FOR_PROGRAM) {
+              // Execute the command on release instead of press
+              executeCommand(footswitchAssignments[changedSwitch - 1], true);
+              
+              // Clear the bottom line after sending command
+              oled.clearMidiMessageArea();
+            }
             switchBeingHeld = false;
           }
           
           // Handle button release for momentary commands
-          const MidiCommand* cmd = getCommand(footswitchAssignments[changedSwitch - 1]);
-          if (cmd->type == TYPE_CC_MOMENTARY) {
-            executeCommand(footswitchAssignments[changedSwitch - 1], false, &oled.state[changedSwitch - 1]);
+          MidiCommand cmd = getCommand(footswitchAssignments[changedSwitch - 1]);
+          if (cmd.type == TYPE_CC_MOMENTARY) {
+            executeCommand(footswitchAssignments[changedSwitch - 1], false);
           }
         }
         

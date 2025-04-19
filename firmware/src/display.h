@@ -14,7 +14,13 @@ class Display {
     void updateFootswitchStates(bool sw1, bool sw2, bool sw3, bool sw4);
     
     // Display a MIDI message that was sent
-    void showMidiMessage(uint8_t type, uint8_t channel, uint8_t data1, uint8_t data2);
+    void showMidiMessage(uint8_t type, uint8_t channel, uint8_t data1, uint8_t data2, uint8_t commandIndex);
+    
+    // Show function preview (when button is pressed but not yet executed)
+    void showFunctionPreview(uint8_t commandIndex);
+    
+    // Clear the MIDI message area only
+    void clearMidiMessageArea();
     
     // Clear the display
     void clear();
@@ -34,13 +40,13 @@ class Display {
     // Show program mode canceled message
     void showProgramCanceled();
     
-    // State variables for the footswitches
-    bool state[4] = {false, false, false, false};
-    
     // Variables for programming mode
     bool inProgramMode = false;
     uint8_t programmingSwitch = 0;
     uint8_t selectedCommand = 0;
+    
+    // Track last pressed footswitch for MIDI message display
+    uint8_t lastPressedSwitch = 0;
     
   private:
     Adafruit_SSD1306 display;

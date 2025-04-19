@@ -3,7 +3,7 @@
 
 Footswitches footswitches;
 
-void Footswitches::begin() {
+void Footswitches::begin() {  
   // Initialize pins as inputs with pull-up resistors
   pinMode(FOOTSWITCH_1_PIN, INPUT_PULLUP);
   pinMode(FOOTSWITCH_2_PIN, INPUT_PULLUP);

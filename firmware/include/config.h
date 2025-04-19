@@ -1,6 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#define FIRMWARE_VERSION "v1.0.2" // Version of the firmware
+
 // Pin Definitions
 #define FOOTSWITCH_1_PIN 2    // D2
 #define FOOTSWITCH_2_PIN 3    // D3
@@ -15,11 +17,6 @@
 
 // MIDI Configuration
 #define MIDI_CHANNEL 1        // MIDI channel (1-16)
-
-// Quad Cortex CC Definitions
-#define QC_TUNER_CC         45  // Tuner toggle (127=ON, 0=OFF)
-#define QC_MODE_SWITCH_CC   47  // Mode switch (0=Preset, 1=Stomp, 2=Scene)
-#define QC_GIG_VIEW_CC      46  // Gig View toggle (127=ON, 0=OFF)
 
 // Programming mode timings
 #define HOLD_TIME_FOR_PROGRAM   5000  // Time to hold switch for programming mode (ms)

@@ -28,7 +28,7 @@ void Display::showSplashScreen(const char* deviceName) {
   // Display title
   display.setTextSize(1);
   display.setCursor(0, 0);
-  display.println(F("MIDI Controller"));
+  display.println(F("Cortex Vue"));
   
   // Display device name
   display.setCursor(0, 10);
@@ -36,22 +36,13 @@ void Display::showSplashScreen(const char* deviceName) {
   
   // Display version
   display.setCursor(0, 20);
-  display.println(F("v1.0.0"));
+  display.println(F(FIRMWARE_VERSION));
   
   display.display();
   delay(2000); // Show splash for 2 seconds
   
   // After splash, show footswitch labels
-  display.clearDisplay();
-  
-  display.setCursor(0, 0);
-  display.println(F("1:Tuner 2:Mode"));
-  
-  display.setCursor(0, 10);
-  display.println(F("3:Preset 4:Gig"));
-  
-  display.display();
-  delay(2000); // Show labels for 2 seconds
+  display.clearDisplay();  
 }
 
 void Display::updateFootswitchStates(bool sw1, bool sw2, bool sw3, bool sw4) {
@@ -73,68 +64,47 @@ void Display::drawFootswitchStates(bool sw1, bool sw2, bool sw3, bool sw4) {
   // First row - Footswitches 1 & 2
   display.setCursor(0, 0);
   display.print(F("1:"));
-  
-  // Get the name of the command assigned to FS1, show short version
-  const char* fs1Name = getCommandName(footswitchAssignments[0]);
-  char fs1ShortName[8] = {0}; // Short name for display space
-  strncpy(fs1ShortName, fs1Name, 7);
-  display.print(fs1ShortName);
+  display.print(getCommandShortName(footswitchAssignments[0]));
   
   display.setCursor(64, 0);
   display.print(F("2:"));
-  
-  // Get the name of the command assigned to FS2, show short version
-  const char* fs2Name = getCommandName(footswitchAssignments[1]);
-  char fs2ShortName[8] = {0};
-  strncpy(fs2ShortName, fs2Name, 7);
-  display.print(fs2ShortName);
+  display.print(getCommandShortName(footswitchAssignments[1]));
   
   // Second row - Footswitches 3 & 4
   display.setCursor(0, 10);
   display.print(F("3:"));
-  
-  // Get the name of the command assigned to FS3, show short version
-  const char* fs3Name = getCommandName(footswitchAssignments[2]);
-  char fs3ShortName[8] = {0};
-  strncpy(fs3ShortName, fs3Name, 7);
-  display.print(fs3ShortName);
+  display.print(getCommandShortName(footswitchAssignments[2]));
   
   display.setCursor(64, 10);
   display.print(F("4:"));
-  
-  // Get the name of the command assigned to FS4, show short version
-  const char* fs4Name = getCommandName(footswitchAssignments[3]);
-  char fs4ShortName[8] = {0};
-  strncpy(fs4ShortName, fs4Name, 7);
-  display.print(fs4ShortName);
+  display.print(getCommandShortName(footswitchAssignments[3]));
 }
 
-void Display::showMidiMessage(uint8_t type, uint8_t channel, uint8_t data1, uint8_t data2) {
+void Display::showMidiMessage(uint8_t type, uint8_t channel, uint8_t data1, uint8_t data2, uint8_t commandIndex) {
   // Write on the bottom area of the display - clear the area first
   display.fillRect(0, 21, SCREEN_WIDTH, 11, SSD1306_BLACK);
   display.setCursor(0, 22);
   
-  // Show MIDI message type
-  if (type == 0xB0) {
-    display.print(F("CC "));
-  } else if (type == 0x90) {
-    display.print(F("Note On "));
-  } else if (type == 0x80) {
-    display.print(F("Note Off "));
-  } else {
-    display.print(F("MIDI 0x"));
-    display.print(type, HEX);
-    display.print(F(" "));
-  }
+  // Show command name instead of MIDI details
+  display.print(getCommandName(commandIndex));
   
-  // Show channel and data
-  display.print(F("Ch:"));
-  display.print(channel);
-  display.print(F(" "));
-  display.print(data1);
-  display.print(F(":"));
-  display.print(data2);
+  display.display();
+}
+
+void Display::showFunctionPreview(uint8_t commandIndex) {
+  // Write on the bottom area of the display - clear the area first
+  display.fillRect(0, 21, SCREEN_WIDTH, 11, SSD1306_BLACK);
+  display.setCursor(0, 22);
   
+  // Show command name 
+  display.print(getCommandName(commandIndex));
+  
+  display.display();
+}
+
+void Display::clearMidiMessageArea() {
+  // Clear just the bottom message area
+  display.fillRect(0, 21, SCREEN_WIDTH, 11, SSD1306_BLACK);
   display.display();
 }
 
